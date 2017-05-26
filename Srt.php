@@ -22,6 +22,7 @@ class Srt
 
     public function write()
     {
+        $this->stackIsNull();
         foreach ($this->stack as $fileName => $groups) {
             $path_parts = pathinfo($fileName);
             $heandle = fopen($path_parts['filename'].'.srt', 'w');
@@ -48,7 +49,7 @@ class Srt
         foreach ($files as $file) {
             if($file == '.' || $file == '..'){ continue; };
             $path_parts = pathinfo($file);
-            if($path_parts['extension'] == 'srt-template'){
+            if(isset($path_parts['extension']) && $path_parts['extension'] == 'srt-template'){
                 $handle = fopen($file, "r");
                 $str_before = '';
                 $group = null;
@@ -90,12 +91,26 @@ class Srt
 
     public function createStack()
     {
+        $this->groupsIsNull();
         foreach ($this->groups as $group) {
             $this->stack[$group->file][] = $group;
         }
         return $this;
     }
 
+    public function groupsIsNull()
+    {
+        if(!isset($this->groups)){
+            throw new \ErrorException('Groups is NULL');
+        }
+    }
+
+    public function stackIsNull()
+    {
+        if(!isset($this->stack)){
+            throw new \ErrorException('Stack is NULL');
+        }
+    }
 }
 
 (new Srt())->open()->createStack()->write();
