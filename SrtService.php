@@ -18,17 +18,7 @@ class SrtService
         $this->stackIsNotNull();
         foreach ($this->stack as $file => $groups) {
             $fileParts = self::splitFileName($file);
-            $heandle = fopen($fileParts['filename'].'.srt', 'w');
-            $count = count($groups);
-            foreach ($groups as $key => $group) {
-                if(($key+1) != $count){
-                    $description = self::createDescription($key, $group);
-                }else{
-                    $description = self::createLastDescription($key, $group);
-                };
-                fwrite($heandle, $description);
-            };
-            fclose($heandle);
+            $this->writeFile($fileParts, $groups);
         }
     }
 
@@ -78,6 +68,21 @@ class SrtService
         if(!isset($this->stack)){
             throw new \ErrorException('Stack is NULL');
         }
+    }
+
+    private function writeFile($file, $groups)
+    {
+        $heandle = fopen($file['filename'].'.srt', 'w');
+        $count = count($groups);
+        foreach ($groups as $key => $group) {
+            if(($key+1) != $count){
+                $description = self::createDescription($key, $group);
+            }else{
+                $description = self::createLastDescription($key, $group);
+            };
+            fwrite($heandle, $description);
+        };
+        fclose($heandle);
     }
 
     private function readFile($file)
