@@ -8,8 +8,8 @@
 
 namespace sergey144010\phpSrtCreator;
 
-
-use sergey144010\phpSrtCreator\SrtService;
+require 'Group.php';
+require 'SrtService.php';
 
 class Srt
 {
@@ -18,3 +18,5 @@ class Srt
         (new SrtService())->open()->createStack()->write();
     }
 }
+
+new Srt();
