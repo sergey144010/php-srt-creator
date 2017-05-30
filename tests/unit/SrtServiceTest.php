@@ -54,7 +54,7 @@ class SrtServiceTest extends \Codeception\Test\Unit
         $group->time = '12345';
         $group->description = 'description';
         $string = '2'.PHP_EOL.'12345'.PHP_EOL.'description';
-        $this->assertEquals($string, SrtService::createDescription($key, $group));
+        $this->assertEquals($string, SrtService::createLastDescription($key, $group));
     }
 
 
@@ -65,7 +65,7 @@ class SrtServiceTest extends \Codeception\Test\Unit
         $group->time = '12345';
         $group->description = 'description';
         $string = '3'.PHP_EOL.'12345'.PHP_EOL.'description'.PHP_EOL.PHP_EOL;
-        $this->assertEquals($string, SrtService::createDescription($key, $group));
+        $this->assertNotEquals($string, SrtService::createDescription($key, $group));
     }
 
     public function testLastDescriptionFalse()
@@ -75,6 +75,6 @@ class SrtServiceTest extends \Codeception\Test\Unit
         $group->time = '12345';
         $group->description = 'description';
         $string = '3'.PHP_EOL.'12345'.PHP_EOL.'description';
-        $this->assertEquals($string, SrtService::createDescription($key, $group));
+        $this->assertNotEquals($string, SrtService::createLastDescription($key, $group));
     }
 }
