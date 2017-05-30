@@ -8,14 +8,7 @@
 
 namespace sergey144010\phpSrtCreator;
 
-class Group
-{
-    public $file;
-    public $time;
-    public $description;
-}
-
-class Srt
+class SrtService
 {
     protected $groups;
     protected $stack;
@@ -24,14 +17,14 @@ class Srt
     {
         $this->stackIsNotNull();
         foreach ($this->stack as $file => $groups) {
-            $fileParts = $this->splitFileName($file);
+            $fileParts = self::splitFileName($file);
             $heandle = fopen($fileParts['filename'].'.srt', 'w');
             $count = count($groups);
             foreach ($groups as $key => $group) {
                 if(($key+1) != $count){
-                    $description = $this->createDescription($key, $group);
+                    $description = self::createDescription($key, $group);
                 }else{
-                    $description = $this->createLastDescription($key, $group);
+                    $description = self::createLastDescription($key, $group);
                 };
                 fwrite($heandle, $description);
             };
@@ -44,8 +37,8 @@ class Srt
         $files = scandir(__DIR__);
         foreach ($files as $file) {
             if($file == '.' || $file == '..'){ continue; };
-            $fileParts = $this->splitFileName($file);
-            if($this->isSrtTemplate($fileParts)){
+            $fileParts = self::splitFileName($file);
+            if(self::isSrtTemplate($fileParts)){
                 $this->readFile($file);
             };
         };
@@ -113,28 +106,25 @@ class Srt
         fclose($handle);
     }
 
-    private function splitFileName($file)
+    public static function splitFileName($file)
     {
         return pathinfo($file);
     }
 
-
-    private function createDescription($key, $group)
+    public static function isSrtTemplate($file)
     {
-        return $this->createLastDescription($key, $group).PHP_EOL.PHP_EOL;
+        return isset($file['extension']) && $file['extension'] == 'srt-template';
     }
 
-    private function createLastDescription($key, $group)
+    public static function createDescription($key, $group)
+    {
+        return self::createLastDescription($key, $group).PHP_EOL.PHP_EOL;
+    }
+
+    public static function createLastDescription($key, $group)
     {
         return ($key+1).PHP_EOL.
             $group->time.PHP_EOL.
             $group->description;
     }
-
-    private function isSrtTemplate($file)
-    {
-        return isset($file['extension']) && $file['extension'] == 'srt-template';
-    }
 }
-
-(new Srt())->open()->createStack()->write();

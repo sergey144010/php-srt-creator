@@ -9,7 +9,12 @@
 namespace sergey144010\phpSrtCreator;
 
 
+use sergey144010\phpSrtCreator\SrtService;
+
 class Srt
 {
-
+    public function __construct()
+    {
+        (new SrtService())->open()->createStack()->write();
+    }
 }

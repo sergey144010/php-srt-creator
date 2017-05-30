@@ -11,5 +11,7 @@ namespace sergey144010\phpSrtCreator;
 
 class Group
 {
-
+    public $file;
+    public $time;
+    public $description;
 }
